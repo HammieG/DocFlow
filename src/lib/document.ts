@@ -23,18 +23,18 @@ function clean(value: unknown, raw: string, type: string): FormattedDocument {
 }
 
 export async function formatDocument(raw: string, type: string): Promise<FormattedDocument> {
-  if (!process.env.OPENAI_API_KEY) return fallbackFormat(raw, type);
+  if (!process.env.GROQ_API_KEY) return fallbackFormat(raw, type);
   const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 8000);
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST", signal: controller.signal,
-      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-4.1-mini", response_format: { type: "json_object" }, messages: [
+      headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: process.env.GROQ_MODEL || "openai/gpt-oss-20b", temperature: 0.2, response_format: { type: "json_object" }, messages: [
         { role: "system", content: "Return JSON only: {title,preamble,sections:[{heading,body}]}. Format a business document cleanly. Preserve all facts; never invent terms." },
         { role: "user", content: `Document type: ${type}\n\nRaw text:\n${raw}` },
       ] }),
     });
-    if (!response.ok) throw new Error(`OpenAI ${response.status}`);
+    if (!response.ok) throw new Error(`Groq ${response.status}`);
     const output = await response.json() as { choices?: { message?: { content?: string } }[] };
     return clean(JSON.parse(output.choices?.[0]?.message?.content || "{}"), raw, type);
   } catch (error) { console.warn("AI formatting failed; using local formatter.", error); return fallbackFormat(raw, type); }

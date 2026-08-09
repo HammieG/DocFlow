@@ -12,7 +12,7 @@ DocFlow is a deliberately lightweight document workflow: paste rough business te
 
 - **Next.js App Router + TypeScript** for a compact full-stack application with server routes next to the UI.
 - **Prisma + SQLite** for a zero-service local setup; a clone can run its own durable local database immediately.
-- **OpenAI API (optional)** for intelligent structuring. The app has an 8-second timeout and deterministic local formatter, so the core workflow continues if the API is absent, slow, or fails.
+- **Groq free-tier API (optional)** for intelligent structuring. The app has an 8-second timeout and deterministic local formatter, so the core workflow continues if the API is absent, rate-limited, slow, or fails.
 - **A small server-side PDF generator** produces a real downloadable PDF without a browser print dialog or external PDF service.
 
 ## Run locally
@@ -27,7 +27,7 @@ npx prisma migrate dev
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). `OPENAI_API_KEY` is optional: leave it blank to exercise the reliable built-in formatter, or add a key to enable AI structuring.
+Open [http://localhost:3000](http://localhost:3000). `GROQ_API_KEY` is optional: leave it blank to exercise the reliable built-in formatter, or add a free key from [Groq Console](https://console.groq.com/keys) to enable AI structuring. Groq's free plan is limited, so DocFlow falls back locally if the quota is unavailable.
 
 ## Full flow to test
 
@@ -46,7 +46,7 @@ Open [http://localhost:3000](http://localhost:3000). `OPENAI_API_KEY` is optiona
 
 ## Deployment
 
-Deploy the app to Vercel, Railway, or Render after switching from SQLite to a managed database provider and setting `DATABASE_URL`, `OPENAI_API_KEY` (optional), and `OPENAI_MODEL` (optional). Run Prisma migrations against that production database as part of deployment. I have not added a fictional demo URL: publish it from your own GitHub account first, then place the actual URL at the top of this README.
+Deploy the app to Vercel, Railway, or Render after switching from SQLite to a managed database provider and setting `DATABASE_URL`, `GROQ_API_KEY` (optional), and `GROQ_MODEL` (optional). Run Prisma migrations against that production database as part of deployment. I have not added a fictional demo URL: publish it from your own GitHub account first, then place the actual URL at the top of this README.
 
 ## What I’d add next
 
