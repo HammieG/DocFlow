@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum DocumentStatus {
+  DRAFT
+  SENT
+  SIGNED
+}
+model Document {
+  id String @id @default(cuid())
+  shareToken String @unique @default(cuid())
+  title String
+  type String
+  rawText String
+  formattedJson String
+  status DocumentStatus @default(DRAFT)
+  signerName String?
+  signatureData String?
+  openedAt DateTime?
+  signedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([shareToken])
+}
